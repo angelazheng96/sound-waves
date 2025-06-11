@@ -36,45 +36,72 @@ var amplitude = 40;
 var counter = 0;
 var interval = null;
 
+var reset = false;
+
+var timePerNote = 0;
+var length = 0;
+
 // Plays note at given pitch for 1 second
 function frequency(pitch) {
   gainNode.gain.setValueAtTime(100, audioCtx.currentTime);
   oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
-  gainNode.gain.setValueAtTime(0, audioCtx.currentTime + 1);
+  gainNode.gain.setValueAtTime(0, audioCtx.currentTime + (timePerNote / 1000) - 0.1);
 
   freq = pitch / 10000;
 }
 
 // Handles button press
 function handle() {
+  reset = true;
+
   audioCtx.resume();
   gainNode.gain.value = 0;
 
   var userInput = String(input.value)
-  frequency(noteNames.get(userInput));
+  var notesList = [];
 
-  counter = 0;
+  length = userInput.length;
+  timePerNote = (6000 / length);
 
-  drawWave();
+  for (i = 0; i < userInput.length; i++) {
+    notesList.push(noteNames.get(userInput.charAt(i)));
+  }
+
+  let j = 0;
+  repeat = setInterval(() => {
+    if (j < notesList.length) {
+      frequency(parseInt(notesList[j]));
+      drawWave();
+      j++;
+    } else {
+      clearInterval(repeat);
+    }
+  }, timePerNote);
 }
 
 // Draws a sine wave with the current note frequency
 function drawWave() {
-  ctx.clearRect(0, 0, width, height);
+  clearInterval(interval);
 
-  x = 0;
-  y = height / 2;
+  if (reset) {
+    ctx.clearRect(0, 0, width, height);
 
-  ctx.moveTo(x, y);
-  ctx.beginPath();
+    x = 0;
+    y = height / 2;
 
+    ctx.moveTo(x, y);
+    ctx.beginPath();
+  }
+
+  counter = 0;
   interval = setInterval(line, 20);
+  reset = false;
 }
 
 // Draws single part of sine wave
 function line() {
   // Calculate where the cursor should be
-  y = height / 2 + amplitude * Math.sin(2 * Math.PI * freq * x);
+  y = height / 2 + amplitude * Math.sin(2 * Math.PI * freq * x * (0.5 * length));
 
   // Draw line
   ctx.lineTo(x, y);
@@ -83,7 +110,7 @@ function line() {
   x++;
   counter++;
 
-  if (counter > 50) {
+  if (counter > (timerPerNote / 20)) {
     clearInterval(interval);
   }
 }
