@@ -8,13 +8,18 @@
 </head>
 
 <body>
+  <h1>Oscillart!</h1>
   <div id="container">
     <canvas id="canvas"></canvas>
   </div>
-  <input type="text" id="input">
-  <button id="submit" onclick="handle()">Play music!</button>
-  <input type="color" id="colour" value="#ff0000">
-  <input type="range" min="1" max="100" value="100" id="vol-slider">
+  <div>
+    <p>Enter notes below and watch them fill up the canvas!</p>
+    <input type="text" id="input">
+    <button id="submit" onclick="handle()">Play music!</button>
+  </div>
+  <div><input type="color" id="colour" value="#ff0000">
+    <input type="range" min="1" max="100" value="100" id="vol-slider">
+  </div>
   <script src="main.js"></script>
 </body>
 
