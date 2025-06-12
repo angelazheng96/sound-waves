@@ -41,14 +41,19 @@ var reset = false;
 var timePerNote = 0;
 var length = 0;
 
-// Colour picker
+// HTML input elements
 const colour_picker = document.getElementById('colour');
+const vol_slider = document.getElementById('vol-slider');
 
 // Plays note at given pitch for 1 second
 function frequency(pitch) {
-  gainNode.gain.setValueAtTime(100, audioCtx.currentTime);
+  gainNode.gain.setValueAtTime(vol_slider.value, audioCtx.currentTime);
+  setting = setInterval(() => { gainNode.gain.value = vol_slider.value }, 1);
   oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
-  gainNode.gain.setValueAtTime(0, audioCtx.currentTime + (timePerNote / 1000) - 0.1);
+  setTimeout(() => {
+    clearInterval(setting);
+    gainNode.gain.value = 0;
+  }, timePerNote - 100);
 
   freq = pitch / 10000;
 }
