@@ -31,8 +31,6 @@ var ctx = canvas.getContext("2d");
 var width = ctx.canvas.width;
 var height = ctx.canvas.height;
 
-var amplitude = 40;
-
 var counter = 0;
 var interval = null;
 
@@ -109,7 +107,7 @@ function drawWave() {
 // Draws single part of sine wave
 function line() {
   // Calculate where the cursor should be
-  y = height / 2 + amplitude * Math.sin(2 * Math.PI * freq * x * (0.5 * length));
+  y = height / 2 + (vol_slider.value * 40 / 100) * Math.sin(2 * Math.PI * freq * x * (0.5 * length));
 
   // Draw line
   ctx.lineTo(x, y);
