@@ -37,10 +37,15 @@ var interval = null;
 var reset = false;
 
 var timePerNote = 0;
+var songLength = 6000;
 var length = 0;
 
+var colourGradient;
+
 // HTML input elements
-const colour_picker = document.getElementById('colour');
+const colour_1 = document.getElementById('colour-1');
+const colour_2 = document.getElementById('colour-2');
+const colour_3 = document.getElementById('colour-3');
 const vol_slider = document.getElementById('vol-slider');
 
 // Plays note at given pitch for 1 second
@@ -67,7 +72,12 @@ function handle() {
   var notesList = [];
 
   length = userInput.length;
-  timePerNote = (6000 / length);
+  timePerNote = (songLength / length);
+
+  colourGradient = ctx.createLinearGradient(0, height / 2, width, height / 2);
+  colourGradient.addColorStop(0, colour_1.value);
+  colourGradient.addColorStop(0.5, colour_2.value);
+  colourGradient.addColorStop(1, colour_3.value);
 
   for (i = 0; i < userInput.length; i++) {
     notesList.push(noteNames.get(userInput.charAt(i)));
@@ -111,13 +121,13 @@ function line() {
 
   // Draw line
   ctx.lineTo(x, y);
-  ctx.strokeStyle = colour_picker.value;
+  ctx.strokeStyle = colourGradient;
   ctx.stroke();
 
   x++;
   counter++;
 
-  if (counter > (timerPerNote / 20)) {
+  if (counter > (timePerNote / 20)) {
     clearInterval(interval);
   }
 }

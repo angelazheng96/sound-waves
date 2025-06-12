@@ -9,16 +9,19 @@
 
 <body>
   <h1>Oscillart!</h1>
-  <div id="container">
-    <canvas id="canvas"></canvas>
-  </div>
   <div>
     <p>Enter notes below and watch them fill up the canvas!</p>
     <input type="text" id="input">
     <button id="submit" onclick="handle()">Play music!</button>
   </div>
-  <div><input type="color" id="colour" value="#ff0000">
+  <div>
+    <input type="color" id="colour-1" value="#7ac0cf">
+    <input type="color" id="colour-2" value="#ccb1e0">
+    <input type="color" id="colour-3" value="#e6bacb">
     <input type="range" min="1" max="100" value="100" id="vol-slider">
+  </div>
+  <div id="container">
+    <canvas id="canvas"></canvas>
   </div>
   <script src="main.js"></script>
 </body>
