@@ -41,6 +41,9 @@ var reset = false;
 var timePerNote = 0;
 var length = 0;
 
+// Colour picker
+const colour_picker = document.getElementById('colour');
+
 // Plays note at given pitch for 1 second
 function frequency(pitch) {
   gainNode.gain.setValueAtTime(100, audioCtx.currentTime);
@@ -105,6 +108,7 @@ function line() {
 
   // Draw line
   ctx.lineTo(x, y);
+  ctx.strokeStyle = colour_picker.value;
   ctx.stroke();
 
   x++;
