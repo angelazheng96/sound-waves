@@ -8,23 +8,25 @@
 </head>
 
 <body>
-  <h1 class="animated-gradient-text">Oscillart</h1>
-  <div>
-    <div id="instructions">Enter notes below and watch them fill up the canvas!</div>
-    <input type="text" id="input">
-    <button id="submit" onclick="handle()">Play music!</button>
-  </div>
-  <div id="colour">
-    <input type="color" id="colour-1" value="#7ac0cf">
-    <input type="color" id="colour-2" value="#ccb1e0">
-    <input type="color" id="colour-3" value="#e6bacb">
-  </div>
-  <div id="volume">
-    <div>Volume</div>
-    <input type="range" min="1" max="100" value="100" id="volume-slider">
-  </div>
   <div id="container">
-    <canvas id="canvas"></canvas>
+    <h1 class="animated-gradient-text">Oscillart</h1>
+    <div>
+      <div id="instructions">Enter notes below and watch them fill up the canvas!</div>
+      <input type="text" id="input">
+      <button id="submit" onclick="handle()">Play music!</button>
+    </div>
+    <div id="colour">
+      <input type="color" id="colour-1" value="#7ac0cf">
+      <input type="color" id="colour-2" value="#ccb1e0">
+      <input type="color" id="colour-3" value="#e6bacb">
+    </div>
+    <div id="volume">
+      <div>Volume</div>
+      <input type="range" min="1" max="100" value="100" id="volume-slider">
+    </div>
+    <div id="canvas-container">
+      <canvas id="canvas"></canvas>
+    </div>
   </div>
   <script src="main.js"></script>
 </body>

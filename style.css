@@ -4,6 +4,10 @@
   --colour3: #dfb6b2;
 }
 
+#container {
+  width: 100vw;
+}
+
 body {
   font-family: Tahoma, Helvetica, sans-serif;
   text-align: center;
