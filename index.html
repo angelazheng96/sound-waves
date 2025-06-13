@@ -20,20 +20,33 @@
       <input type="color" id="colour-2" value="#ccb1e0">
       <input type="color" id="colour-3" value="#e6bacb">
     </div>
-    <div id="volume">
-      <div>Volume</div>
-      <input type="range" min="1" max="100" value="100" id="volume-slider">
+
+    <div class="slider-group">
+      <label for="volume-slider">Volume</label>
+      <div class="slider-hover-group">
+        <input type="range" id="volume-slider" class="slider" min="0" max="100" value="100">
+        <span id="volume-sliderValue" class="slider-value">100</span>
+      </div>
     </div>
-    <div id="canvas-container">
-      <canvas id="canvas"></canvas>
+    <div class="slider-group">
+      <label for="length-slider">Song Length (seconds)</label>
+      <div class="slider-hover-group">
+        <input type="range" id="length-slider" class="slider" min="5" max="10" value="10">
+        <span id="length-sliderValue" class="slider-value">10</span>
+      </div>
     </div>
+  </div>
+
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
   </div>
   <script src="main.js"></script>
 </body>
 
 <footer class="animated-gradient-text">
   <span>Made with 💜 by </span>
-  <a href="https://github.com/angelazheng96">Angela Zheng</a>
+  <a href="https://github.com/angelazheng96" target="_blank">Angela Zheng</a>
 </footer>
 
 </html>

@@ -46,7 +46,6 @@ var colourGradient;
 const colour_1 = document.getElementById('colour-1');
 const colour_2 = document.getElementById('colour-2');
 const colour_3 = document.getElementById('colour-3');
-const vol_slider = document.getElementById('volume-slider');
 
 // Updates CSS colour variables
 function updateColours() {
@@ -61,10 +60,25 @@ colour_3.addEventListener('input', updateColours);
 
 updateColours();
 
+const volumeSlider = document.getElementById('volume-slider');
+const volumeSliderValue = document.getElementById('volume-sliderValue');
+
+volumeSlider.addEventListener('input', function () {
+  volumeSliderValue.textContent = volumeSlider.value;
+});
+
+const lengthSlider = document.getElementById('length-slider');
+const lengthSliderValue = document.getElementById('length-sliderValue');
+
+lengthSlider.addEventListener('input', function () {
+  lengthSliderValue.textContent = lengthSlider.value;
+  songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
+});
+
 // Plays note at given pitch for 1 second
 function frequency(pitch) {
-  gainNode.gain.setValueAtTime(vol_slider.value, audioCtx.currentTime);
-  setting = setInterval(() => { gainNode.gain.value = vol_slider.value }, 1);
+  gainNode.gain.setValueAtTime(volumeSlider.value, audioCtx.currentTime);
+  setting = setInterval(() => { gainNode.gain.value = volumeSlider.value }, 1);
   oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
   setTimeout(() => {
     clearInterval(setting);
@@ -84,6 +98,7 @@ function handle() {
   var userInput = String(input.value)
   var notesList = [];
 
+  songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
   length = userInput.length;
   timePerNote = (songLength / length);
 
@@ -132,7 +147,7 @@ function drawWave() {
 // Draws single part of sine wave
 function line() {
   // Calculate where the cursor should be
-  y = height / 2 + (vol_slider.value * 40 / 100) * Math.sin(2 * Math.PI * freq * x * (0.5 * length));
+  y = height / 2 + (volumeSlider.value * 40 / 100) * Math.sin(2 * Math.PI * freq * x * (0.5 * length));
 
   // Draw line
   ctx.lineTo(x, y);

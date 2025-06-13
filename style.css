@@ -34,7 +34,38 @@ button {
   margin: 1.5em;
 }
 
-#volume-slider {
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1.5em 0;
+}
+
+.slider-hover-group {
+  position: relative;
+  display: inline-block;
+}
+
+.slider-value {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 1.7em;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  pointer-events: none;
+}
+
+.slider-hover-group:hover .slider-value,
+.slider-hover-group:focus-within .slider-value {
+  display: block;
+}
+
+.slider {
   -webkit-appearance: none;
   width: 200px;
   height: 12px;
@@ -45,7 +76,7 @@ button {
   cursor: pointer;
 }
 
-#volume-slider::-webkit-slider-thumb {
+.slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;
