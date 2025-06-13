@@ -46,7 +46,7 @@ var colourGradient;
 const colour_1 = document.getElementById('colour-1');
 const colour_2 = document.getElementById('colour-2');
 const colour_3 = document.getElementById('colour-3');
-const vol_slider = document.getElementById('vol-slider');
+const vol_slider = document.getElementById('volume-slider');
 
 // Updates CSS colour variables
 function updateColours() {
