@@ -48,6 +48,19 @@ const colour_2 = document.getElementById('colour-2');
 const colour_3 = document.getElementById('colour-3');
 const vol_slider = document.getElementById('vol-slider');
 
+// Updates CSS colour variables
+function updateColours() {
+  document.documentElement.style.setProperty('--colour1', colour_1.value);
+  document.documentElement.style.setProperty('--colour2', colour_2.value);
+  document.documentElement.style.setProperty('--colour3', colour_3.value);
+}
+
+colour_1.addEventListener('input', updateColours);
+colour_2.addEventListener('input', updateColours);
+colour_3.addEventListener('input', updateColours);
+
+updateColours();
+
 // Plays note at given pitch for 1 second
 function frequency(pitch) {
   gainNode.gain.setValueAtTime(vol_slider.value, audioCtx.currentTime);

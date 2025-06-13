@@ -8,16 +8,18 @@
 </head>
 
 <body>
-  <h1>Oscillart!</h1>
+  <h1 class="animated-gradient-text">Oscillart</h1>
   <div>
     <p>Enter notes below and watch them fill up the canvas!</p>
     <input type="text" id="input">
     <button id="submit" onclick="handle()">Play music!</button>
   </div>
-  <div>
+  <div id="colour">
     <input type="color" id="colour-1" value="#7ac0cf">
     <input type="color" id="colour-2" value="#ccb1e0">
     <input type="color" id="colour-3" value="#e6bacb">
+  </div>
+  <div id="volume">
     <input type="range" min="1" max="100" value="100" id="vol-slider">
   </div>
   <div id="container">

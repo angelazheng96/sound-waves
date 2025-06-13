@@ -1,6 +1,52 @@
+:root {
+  --colour1: #a3d2ca;
+  --colour2: #c4a5d3;
+  --colour3: #dfb6b2;
+}
+
+body {
+  font-family: Tahoma, Helvetica, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+#colour {
+  margin: 1em;
+}
+
 #canvas {
-  border: 5px solid black;
   height: 500px;
-  width: 900px;
+  width: 100vw;
   margin-bottom: 2em;
+}
+
+.animated-gradient-text {
+  background: linear-gradient(90deg,
+    var(--colour1),
+    var(--colour2),
+    var(--colour3));
+  background-size: 800% 800%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
