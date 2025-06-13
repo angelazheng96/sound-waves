@@ -18,6 +18,14 @@ h1 {
   margin: 1em;
 }
 
+input {
+  font-family: Tahoma, Helvetica, sans-serif;
+}
+
+button {
+  font-family: Tahoma, Helvetica, sans-serif;
+}
+
 #colour {
   margin: 1.5em;
 }

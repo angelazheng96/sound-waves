@@ -96,6 +96,8 @@ function handle() {
     notesList.push(noteNames.get(userInput.charAt(i)));
   }
 
+  console.log(notesList);
+
   let j = 0;
   repeat = setInterval(() => {
     if (j < notesList.length) {
