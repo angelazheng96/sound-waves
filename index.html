@@ -14,7 +14,9 @@
     <input type="text" id="input">
     <button id="submit" onclick="handle()">Play music!</button>
   </div>
+
   <div id="colour">
+    <div id="colour-text">Colours</div>
     <input type="color" id="colour-1" value="#7ac0cf">
     <input type="color" id="colour-2" value="#ccb1e0">
     <input type="color" id="colour-3" value="#e6bacb">
@@ -27,6 +29,7 @@
       <span id="volume-sliderValue" class="slider-value">100</span>
     </div>
   </div>
+
   <div class="slider-group">
     <label for="length-slider">Song Length (seconds)</label>
     <div class="slider-hover-group">
@@ -34,6 +37,15 @@
       <span id="length-sliderValue" class="slider-value">10</span>
     </div>
   </div>
+
+  <div id="wave-type-container">
+    <label for="wave-type-select">Wave Type</label>
+    <select id="wave-type-select">
+      <option value="sine">Sine</option>
+      <option value="square">Square</option>
+      <option value="triangle">Triangle</option>
+      <option value="sawtooth">Sawtooth</option>
+    </select>
   </div>
 
   <div id="record-container">
@@ -43,6 +55,7 @@
   <div id="canvas-container">
     <canvas id="canvas"></canvas>
   </div>
+
   <script src="main.js"></script>
 </body>
 

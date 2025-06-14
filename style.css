@@ -5,13 +5,14 @@
 }
 
 body {
-  font-family: Tahoma, Helvetica, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
 }
 
 h1 {
-  font-size: 4rem;
+  font-size: 4em;
   font-weight: bold;
+  margin: 0.3em 0;
 }
 
 #instructions {
@@ -19,15 +20,27 @@ h1 {
 }
 
 input {
-  font-family: Tahoma, Helvetica, sans-serif;
+  font-family: 'Segoe UI',
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
 }
 
 button {
-  font-family: Tahoma, Helvetica, sans-serif;
+  font-family: 'Segoe UI',
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
 }
 
 #colour {
   margin: 1.5em;
+}
+
+#colour-text {
+  margin-bottom: 0.6em;
 }
 
 .slider-group {
@@ -82,6 +95,23 @@ button {
   border: 2px solid #333;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
   cursor: pointer;
+}
+
+#wave-type-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5em 0;
+}
+
+#wave-type-select {
+  margin-top: 0.5em;
+  font-family: 'Segoe UI',
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
 }
 
 #canvas-container {

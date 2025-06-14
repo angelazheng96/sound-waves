@@ -75,6 +75,9 @@ lengthSlider.addEventListener('input', function () {
   songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
 });
 
+// Wave type
+const waveTypeSelect = document.getElementById('wave-type-select');
+
 // Recording
 var blob, recorder = null;
 var chunks = [];
@@ -178,6 +181,23 @@ function handle() {
   }, timePerNote);
 }
 
+function waveType(x, period) {
+  switch (waveTypeSelect.value) {
+    case 'sine':
+      return Math.sin(2 * Math.PI / period * x);
+    case 'square':
+      return Math.sign(Math.sin(2 * Math.PI / period * x));
+    case 'triangle':
+      return (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI / period * x));
+    case 'sawtooth':
+      return 2 * (x / period - Math.floor(0.5 + x / period));
+    default:
+      return Math.sin(2 * Math.PI / period * x);
+  }
+}
+
+var waveUpdatePeriod;
+
 // Draws a sine wave with the current note frequency
 function drawWave() {
   clearInterval(interval);
@@ -192,18 +212,17 @@ function drawWave() {
     ctx.beginPath();
   }
 
-  console.log(width);
-  console.log(songLength / width);
+  waveUpdatePeriod = songLength / width;
 
   counter = 0;
-  interval = setInterval(line, songLength / width);
+  interval = setInterval(line, waveUpdatePeriod);
   reset = false;
 }
 
 // Draws single part of sine wave
 function line() {
   // Calculate where the cursor should be
-  y = (height / 2) + (0.4 * volumeSlider.value) * Math.sin((2 * Math.PI) * (freq / 10000) * (length / 2) * x);
+  y = (height / 2) + (0.4 * volumeSlider.value) * waveType(x, 1 / ((freq / 10000) * (length / 2)));
 
   // Draw line
   ctx.lineTo(x, y);
@@ -213,7 +232,7 @@ function line() {
   x++;
   counter++;
 
-  if (counter > (timePerNote / 20)) {
+  if (counter > (timePerNote / waveUpdatePeriod)) {
     clearInterval(interval);
   }
 }
