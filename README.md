@@ -1,7 +1,7 @@
 # Oscillart
 Create wavy, mathy, musical art on your very own canvas! 🧮🎶  
 
-This project was made for Hack Club's [Oscillart YSWS](https://jams.hackclub.com/batch/oscillart).  
+This project was made for Hack Club's [Oscillart YSWS](https://oscillart.athena.hackclub.com/).  
   
 ## Features
 🎵 Enter musical notes and watch them fill up the canvas (website verifies that user input is valid)  
