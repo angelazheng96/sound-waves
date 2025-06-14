@@ -133,7 +133,7 @@ function toggle() {
   }
 }
 
-// Plays note at given pitch for 1 second
+// Plays note at given pitch
 function frequency(pitch) {
   gainNode.gain.setValueAtTime(volumeSlider.value, audioCtx.currentTime);
   setting = setInterval(() => { gainNode.gain.value = volumeSlider.value }, 1);
@@ -170,6 +170,12 @@ function handle() {
   }
 
   let j = 0;
+
+  // Play first note immediately
+  frequency(parseInt(notesList[j]));
+  drawWave();
+  j++;
+
   repeat = setInterval(() => {
     if (j < notesList.length) {
       frequency(parseInt(notesList[j]));
