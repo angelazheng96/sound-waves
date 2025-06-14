@@ -146,6 +146,12 @@ function frequency(pitch) {
   freq = pitch;
 }
 
+function validInput(input) {
+  // Check if input is valid (only contains C, D, E, F, G, A, B)
+  const validChars = /^[CDEFGAB]+$/;
+  return validChars.test(input);
+}
+
 // Handles button press
 function handle() {
   reset = true;
@@ -156,35 +162,43 @@ function handle() {
   var userInput = String(input.value)
   var notesList = [];
 
-  songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
-  length = userInput.length;
-  timePerNote = (songLength / length);
+  if (validInput(userInput)) {
+    document.getElementById('input-error').style.display = 'none';
 
-  colourGradient = ctx.createLinearGradient(0, height / 2, width, height / 2);
-  colourGradient.addColorStop(0, colour_1.value);
-  colourGradient.addColorStop(0.5, colour_2.value);
-  colourGradient.addColorStop(1, colour_3.value);
+    songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
+    length = userInput.length;
+    timePerNote = (songLength / length);
 
-  for (i = 0; i < userInput.length; i++) {
-    notesList.push(noteNames.get(userInput.charAt(i)));
-  }
+    colourGradient = ctx.createLinearGradient(0, height / 2, width, height / 2);
+    colourGradient.addColorStop(0, colour_1.value);
+    colourGradient.addColorStop(0.5, colour_2.value);
+    colourGradient.addColorStop(1, colour_3.value);
 
-  let j = 0;
-
-  // Play first note immediately
-  frequency(parseInt(notesList[j]));
-  drawWave();
-  j++;
-
-  repeat = setInterval(() => {
-    if (j < notesList.length) {
-      frequency(parseInt(notesList[j]));
-      drawWave();
-      j++;
-    } else {
-      clearInterval(repeat);
+    for (i = 0; i < userInput.length; i++) {
+      notesList.push(noteNames.get(userInput.charAt(i)));
     }
-  }, timePerNote);
+
+    let j = 0;
+
+    // Play first note immediately
+    frequency(parseInt(notesList[j]));
+    drawWave();
+    j++;
+
+    repeat = setInterval(() => {
+      if (j < notesList.length) {
+        frequency(parseInt(notesList[j]));
+        drawWave();
+        j++;
+      } else {
+        clearInterval(repeat);
+      }
+    }, timePerNote);
+  
+  } else {
+    document.getElementById('input-error').style.display = 'flex';
+  }
+  
 }
 
 function waveType(x, period) {
