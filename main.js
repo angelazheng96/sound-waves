@@ -1,26 +1,33 @@
 // ==== DOM ELEMENTS ====
 const input = document.getElementById("input");
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
 const colour_1 = document.getElementById('colour-1');
 const colour_2 = document.getElementById('colour-2');
 const colour_3 = document.getElementById('colour-3');
+
 const volumeSlider = document.getElementById('volume-slider');
 const volumeSliderValue = document.getElementById('volume-sliderValue');
 const lengthSlider = document.getElementById('length-slider');
 const lengthSliderValue = document.getElementById('length-sliderValue');
+
 const waveTypeSelect = document.getElementById('wave-type-select');
 const recordingToggle = document.getElementById('record');
 
 // ==== AUDIO SETUP ====
 const audioCtx = new AudioContext();
 const gainNode = audioCtx.createGain();
-let oscillator = audioCtx.createOscillator();
-oscillator.type = "sine";
-oscillator.connect(gainNode);
 gainNode.connect(audioCtx.destination);
-oscillator.start();
 gainNode.gain.value = 0;
+
+const oscillator = audioCtx.createOscillator();
+oscillator.type = "sine";
+oscillator.frequency.setValueAtTime(0, audioCtx.currentTime);
+oscillator.connect(gainNode);
+oscillator.start();
+window.oscillator = oscillator;
 
 // ==== NOTE FREQUENCIES ====
 const noteNames = new Map([
@@ -39,11 +46,14 @@ let x, y;
 // ==== SONG STATE ====
 let freq, counter = 0, reset = false;
 let timePerNote = 0, songLength = 6000, length = 0;
+let repeat = null;      // For note playback interval
+let stopTimeout = null; // For the setTimeout that stops the song
 
 // ==== RECORDING ====
 let blob, recorder = null, chunks = [], is_recording = false;
 
 // ==== UI EVENT LISTENERS ====
+
 // Update CSS color variables
 function updateColours() {
   document.documentElement.style.setProperty('--colour1', colour_1.value);
@@ -58,6 +68,7 @@ volumeSlider.addEventListener('input', () => volumeSliderValue.textContent = vol
 lengthSlider.addEventListener('input', () => lengthSliderValue.textContent = lengthSlider.value + " seconds");
 
 // ==== RECORDING FUNCTIONS ====
+
 // Start/stop recording canvas and audio
 function startRecording() {
   const canvasStream = canvas.captureStream(20);
@@ -90,9 +101,10 @@ function toggle() {
 }
 
 // ==== AUDIO PLAYBACK ====
+
 // Play note at given pitch with envelope
 function frequency(pitch) {
-  oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
+  window.oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
 
   const now = audioCtx.currentTime;
   const fadeIn = timePerNote / 1000 * 0.05;
@@ -115,6 +127,19 @@ function validInput(input) {
 
 // Handles play button press
 function handle() {
+  // Interrupt any current playback
+  if (repeat) {
+    clearInterval(repeat);
+    repeat = null;
+  }
+  if (stopTimeout) {
+    clearTimeout(stopTimeout);
+    stopTimeout = null;
+  }
+  clearInterval(interval);
+  gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+  resetOscillator();
+
   reset = true;
   audioCtx.resume();
   gainNode.gain.value = 0;
@@ -146,7 +171,7 @@ function handle() {
   j++;
 
   // Play remaining notes at intervals
-  const repeat = setInterval(() => {
+  repeat = setInterval(() => {
     if (j < notesList.length) {
       frequency(notesList[j]);
       drawWave();
@@ -157,20 +182,24 @@ function handle() {
   }, timePerNote);
 
   // Stop sound and reset oscillator at end
-  setTimeout(() => {
+  stopTimeout = setTimeout(() => {
     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    resetOscillator();
+    // resetOscillator();
   }, songLength);
 }
 
 // ==== OSCILLATOR RESET ====
+
 // Stop and recreate oscillator for next playback
 function resetOscillator() {
-  try { oscillator.stop(); oscillator.disconnect(); } catch (e) { }
-  gainNode.gain.value = 0;
+  if (window.oscillator) {
+    try { window.oscillator.stop(); } catch (e) { }
+    try { window.oscillator.disconnect(); } catch (e) { }
+  }
+  gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
 
   const newOsc = audioCtx.createOscillator();
-  newOsc.type = waveTypeSelect?.value || "sine";
+  newOsc.type = "sine";
   newOsc.connect(gainNode);
   newOsc.start();
   window.oscillator = newOsc;
