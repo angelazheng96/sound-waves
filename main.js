@@ -72,7 +72,6 @@ const lengthSliderValue = document.getElementById('length-sliderValue');
 
 lengthSlider.addEventListener('input', function () {
   lengthSliderValue.textContent = lengthSlider.value + " seconds";
-  songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
 });
 
 // Wave type
@@ -141,7 +140,7 @@ function frequency(pitch) {
   setTimeout(() => {
     clearInterval(setting);
     gainNode.gain.value = 0;
-  }, timePerNote - 100);
+  }, timePerNote * 0.9); // Stop sound after 90% of the note duration
 
   freq = pitch;
 }
@@ -165,9 +164,9 @@ function handle() {
   if (validInput(userInput)) {
     document.getElementById('input-error').style.display = 'none';
 
-    songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
+    timePerNote = parseFloat(lengthSlider.value) * 1000; // Convert seconds to milliseconds
     length = userInput.length;
-    timePerNote = (songLength / length);
+    songLength = timePerNote * length;
 
     colourGradient = ctx.createLinearGradient(0, height / 2, width, height / 2);
     colourGradient.addColorStop(0, colour_1.value);
@@ -194,11 +193,11 @@ function handle() {
         clearInterval(repeat);
       }
     }, timePerNote);
-  
+
   } else {
     document.getElementById('input-error').style.display = 'flex';
   }
-  
+
 }
 
 function waveType(x, period) {
@@ -233,9 +232,20 @@ function drawWave() {
   }
 
   waveUpdatePeriod = songLength / width;
+  console.log("Wave update period: " + waveUpdatePeriod);
 
-  counter = 0;
-  interval = setInterval(line, waveUpdatePeriod);
+  let steps = width;
+  let counter = 0;
+
+  interval = setInterval(() => {
+    line(); // your function to draw the next point
+    x++;
+    counter++;
+    if (counter >= steps) {
+      clearInterval(interval);
+    }
+  }, waveUpdatePeriod);
+
   reset = false;
 }
 
@@ -249,8 +259,8 @@ function line() {
   ctx.strokeStyle = colourGradient;
   ctx.stroke();
 
-  x++;
-  counter++;
+  // x++;
+  // counter++;
 
   if (counter > (timePerNote / waveUpdatePeriod)) {
     clearInterval(interval);
