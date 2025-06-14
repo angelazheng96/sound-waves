@@ -1,3 +1,4 @@
+/* Colours */
 :root {
   --background-colour-light: #ffffff;
   --text-colour-light: #000000;
@@ -16,6 +17,7 @@ body {
   color: var(--text-colour-light);
 }
 
+/* Dark mode attributes to be applied */
 .dark-mode {
   background-color: var(--background-colour-dark);
   color: var(--text-colour-dark);
@@ -27,12 +29,41 @@ h1 {
   margin: 0.3em 0;
 }
 
+/* Animated gradient text */
+.animated-gradient-text {
+  background: linear-gradient(90deg,
+      var(--colour1),
+      var(--colour2),
+      var(--colour3));
+  background-size: 800% 800%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 h2 {
   font-size: 1em;
   font-weight: 600;
   margin: 0.8em 0;
 }
 
+/* Instructions */
 #instructions-container {
   display: flex;
   flex-direction: column;
@@ -46,6 +77,7 @@ h2 {
   margin: 0.5em 0;
 }
 
+/* Note input */
 #input-container {
   display: flex;
   flex-direction: column;
@@ -69,6 +101,7 @@ button {
     sans-serif;
 }
 
+/* Colour selection */
 #colour-container {
   display: flex;
   flex-direction: column;
@@ -85,7 +118,7 @@ button {
   margin-top: 1em;
 }
 
-/* The switch - the box around the slider */
+/* Dark mode switch */
 .switch {
   position: relative;
   display: inline-block;
@@ -101,7 +134,7 @@ button {
   height: 0;
 }
 
-/* The slider */
+/* Slider */
 .slider {
   position: absolute;
   cursor: pointer;
@@ -136,7 +169,7 @@ input:checked+.slider:before {
   transform: translateX(15px);
 }
 
-/* Rounded sliders */
+/* Make slider round */
 .slider.round {
   border-radius: 34px;
 }
@@ -145,6 +178,7 @@ input:checked+.slider:before {
   border-radius: 50%;
 }
 
+/* Volume and note length sliders */
 .slider-group {
   display: flex;
   flex-direction: column;
@@ -176,6 +210,7 @@ input:checked+.slider:before {
   display: block;
 }
 
+/* Add gradient to sliders */
 .slider-gradient {
   -webkit-appearance: none;
   width: 200px;
@@ -198,6 +233,7 @@ input:checked+.slider:before {
   cursor: pointer;
 }
 
+/* Wave type selection */
 #wave-type-container {
   display: flex;
   flex-direction: column;
@@ -215,6 +251,14 @@ input:checked+.slider:before {
     sans-serif;
 }
 
+/* Recording */
+#record-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Canvas */
 #canvas-container {
   margin: 0;
   padding: 0;
@@ -227,39 +271,7 @@ input:checked+.slider:before {
   display: block;
 }
 
-.animated-gradient-text {
-  background: linear-gradient(90deg,
-      var(--colour1),
-      var(--colour2),
-      var(--colour3));
-  background-size: 800% 800%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-  animation: gradientShift 4s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-#record-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
+/* Footer */
 footer {
   margin: 1em 0;
 }
