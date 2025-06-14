@@ -4,10 +4,6 @@
   --colour3: #dfb6b2;
 }
 
-#container {
-  width: 100vw;
-}
-
 body {
   font-family: Tahoma, Helvetica, sans-serif;
   text-align: center;
@@ -88,10 +84,16 @@ button {
   cursor: pointer;
 }
 
+#canvas-container {
+  margin: 0;
+  padding: 0;
+}
+
 #canvas {
   height: 500px;
-  width: 100vw;
+  width: 100%;
   margin-bottom: 2em;
+  display: block;
 }
 
 .animated-gradient-text {
@@ -119,4 +121,14 @@ button {
   100% {
     background-position: 0% 50%;
   }
+}
+
+#record-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+footer {
+  margin: 1em 0;
 }
