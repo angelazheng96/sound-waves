@@ -1,4 +1,9 @@
 :root {
+  --background-colour-light: #ffffff;
+  --text-colour-light: #000000;
+  --background-colour-dark: #2f3136;
+  --text-colour-dark: #ffffff;
+
   --colour1: #a3d2ca;
   --colour2: #c4a5d3;
   --colour3: #dfb6b2;
@@ -7,12 +12,25 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
+  background-color: var(--background-colour-light);
+  color: var(--text-colour-light);
+}
+
+.dark-mode {
+  background-color: var(--background-colour-dark);
+  color: var(--text-colour-dark);
 }
 
 h1 {
   font-size: 4em;
   font-weight: bold;
   margin: 0.3em 0;
+}
+
+h2 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0.8em 0;
 }
 
 #instructions-container {
@@ -44,19 +62,87 @@ button {
     sans-serif;
 }
 
-#colour {
-  margin: 1.5em;
+#colour-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5em 0 0 0;
 }
 
-#colour-text {
-  margin-bottom: 0.6em;
+#toggle-dark-mode-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1em;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 25px;
+  margin: 0 0.55em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 21px;
+  width: 21px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: var(--colour2);
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(15px);
+  -ms-transform: translateX(15px);
+  transform: translateX(15px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 
 .slider-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1.5em 0;
+  margin: 1em 0;
 }
 
 .slider-hover-group {
@@ -83,18 +169,17 @@ button {
   display: block;
 }
 
-.slider {
+.slider-gradient {
   -webkit-appearance: none;
   width: 200px;
   height: 12px;
   border-radius: 6px;
   background: linear-gradient(90deg, var(--colour1), var(--colour2), var(--colour3));
   outline: none;
-  margin: 10px 0;
   cursor: pointer;
 }
 
-.slider::-webkit-slider-thumb {
+.slider-gradient::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;

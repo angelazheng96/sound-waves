@@ -23,31 +23,40 @@
     <button id="submit" onclick="handle()">Play music!</button>
   </div>
 
-  <div id="colour">
-    <div id="colour-text">Colours</div>
-    <input type="color" id="colour-1" value="#7ac0cf">
-    <input type="color" id="colour-2" value="#ccb1e0">
-    <input type="color" id="colour-3" value="#e6bacb">
+  <div id="colour-container">
+    <h2>Colours</h2>
+    <div id="colour-picker-container">
+      <input type="color" id="colour-1" value="#7ac0cf">
+      <input type="color" id="colour-2" value="#ccb1e0">
+      <input type="color" id="colour-3" value="#e6bacb">
+    </div>
+    <div id="toggle-dark-mode-container">
+      <label for="toggle-dark-mode">Dark Mode</label>
+      <label class="switch">
+        <input type="checkbox" id="toggle-dark-mode" onclick="toggleDarkMode()">
+        <span class="slider round"></span>
+      </label>
+    </div>
   </div>
 
   <div class="slider-group">
-    <label for="volume-slider">Volume</label>
+    <h2 for="volume-slider">Volume</h2>
     <div class="slider-hover-group">
-      <input type="range" id="volume-slider" class="slider" min="0" max="100" value="100">
+      <input type="range" id="volume-slider" class="slider-gradient" min="0" max="100" value="100">
       <span id="volume-sliderValue" class="slider-value">100</span>
     </div>
   </div>
 
   <div class="slider-group">
-    <label for="length-slider">Song Length (seconds)</label>
+    <h2 for="length-slider">Song Length (seconds)</h2>
     <div class="slider-hover-group">
-      <input type="range" id="length-slider" class="slider" min="5" max="10" value="10">
+      <input type="range" id="length-slider" class="slider-gradient" min="5" max="10" value="10">
       <span id="length-sliderValue" class="slider-value">10</span>
     </div>
   </div>
 
   <div id="wave-type-container">
-    <label for="wave-type-select">Wave Type</label>
+    <h2 for="wave-type-select">Wave Type</h2>
     <select id="wave-type-select">
       <option value="sine">Sine</option>
       <option value="square">Square</option>

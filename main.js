@@ -242,3 +242,16 @@ function line() {
     clearInterval(interval);
   }
 }
+
+function toggleDarkMode() {
+  let isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+}
+
+// On page load, remember if dark mode was enabled
+document.addEventListener('DOMContentLoaded', (event) => {
+  if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('toggle-dark-mode').checked = true;
+  }
+});
