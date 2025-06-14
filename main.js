@@ -1,279 +1,235 @@
+// ==== DOM ELEMENTS ====
 const input = document.getElementById("input");
-
-// Create web audio api elements
-const audioCtx = new AudioContext();
-const gainNode = audioCtx.createGain();
-
-// Create Oscillator node
-const oscillator = audioCtx.createOscillator();
-oscillator.connect(gainNode);
-gainNode.connect(audioCtx.destination);
-oscillator.type = "sine";
-
-oscillator.start();
-gainNode.gain.value = 0;
-
-// Initialize note frequencies
-noteNames = new Map();
-noteNames.set("C", 261.6);
-noteNames.set("D", 293.7);
-noteNames.set("E", 329.6);
-noteNames.set("F", 349.2);
-noteNames.set("G", 392.0);
-noteNames.set("A", 440.0);
-noteNames.set("B", 493.9);
-
-var freq;
-
-// Define canvas variables
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
-var width = ctx.canvas.width;
-var height = ctx.canvas.height;
-
-var counter = 0;
-var interval = null;
-
-var reset = false;
-
-var timePerNote = 0;
-var songLength = 6000;
-var length = 0;
-
-var colourGradient;
-
-// HTML input elements
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 const colour_1 = document.getElementById('colour-1');
 const colour_2 = document.getElementById('colour-2');
 const colour_3 = document.getElementById('colour-3');
+const volumeSlider = document.getElementById('volume-slider');
+const volumeSliderValue = document.getElementById('volume-sliderValue');
+const lengthSlider = document.getElementById('length-slider');
+const lengthSliderValue = document.getElementById('length-sliderValue');
+const waveTypeSelect = document.getElementById('wave-type-select');
+const recordingToggle = document.getElementById('record');
 
-// Updates CSS colour variables
+// ==== AUDIO SETUP ====
+const audioCtx = new AudioContext();
+const gainNode = audioCtx.createGain();
+let oscillator = audioCtx.createOscillator();
+oscillator.type = "sine";
+oscillator.connect(gainNode);
+gainNode.connect(audioCtx.destination);
+oscillator.start();
+gainNode.gain.value = 0;
+
+// ==== NOTE FREQUENCIES ====
+const noteNames = new Map([
+  ["C", 261.6], ["D", 293.7], ["E", 329.6],
+  ["F", 349.2], ["G", 392.0], ["A", 440.0], ["B", 493.9]
+]);
+
+// ==== CANVAS VARIABLES ====
+let width = ctx.canvas.width;
+let height = ctx.canvas.height;
+let colourGradient;
+let interval = null;
+let waveUpdatePeriod;
+let x, y;
+
+// ==== SONG STATE ====
+let freq, counter = 0, reset = false;
+let timePerNote = 0, songLength = 6000, length = 0;
+
+// ==== RECORDING ====
+let blob, recorder = null, chunks = [], is_recording = false;
+
+// ==== UI EVENT LISTENERS ====
+// Update CSS color variables
 function updateColours() {
   document.documentElement.style.setProperty('--colour1', colour_1.value);
   document.documentElement.style.setProperty('--colour2', colour_2.value);
   document.documentElement.style.setProperty('--colour3', colour_3.value);
 }
-
-colour_1.addEventListener('input', updateColours);
-colour_2.addEventListener('input', updateColours);
-colour_3.addEventListener('input', updateColours);
-
+[colour_1, colour_2, colour_3].forEach(el => el.addEventListener('input', updateColours));
 updateColours();
 
-const volumeSlider = document.getElementById('volume-slider');
-const volumeSliderValue = document.getElementById('volume-sliderValue');
+// Volume and length slider display
+volumeSlider.addEventListener('input', () => volumeSliderValue.textContent = volumeSlider.value);
+lengthSlider.addEventListener('input', () => lengthSliderValue.textContent = lengthSlider.value + " seconds");
 
-volumeSlider.addEventListener('input', function () {
-  volumeSliderValue.textContent = volumeSlider.value;
-});
-
-const lengthSlider = document.getElementById('length-slider');
-const lengthSliderValue = document.getElementById('length-sliderValue');
-
-lengthSlider.addEventListener('input', function () {
-  lengthSliderValue.textContent = lengthSlider.value + " seconds";
-});
-
-// Wave type
-const waveTypeSelect = document.getElementById('wave-type-select');
-
-// Recording
-var blob, recorder = null;
-var chunks = [];
-
-const recordingToggle = document.getElementById('record');
-
+// ==== RECORDING FUNCTIONS ====
+// Start/stop recording canvas and audio
 function startRecording() {
-  const canvasStream = canvas.captureStream(20); // Frame rate of canvas
+  const canvasStream = canvas.captureStream(20);
   const audioDestination = audioCtx.createMediaStreamDestination();
   gainNode.connect(audioDestination);
+
   const combinedStream = new MediaStream();
+  chunks = [];
 
-  chunks = []; // Reset chunks for new recording
-
-  // Add in video data
   canvasStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
-
-  // Add in audio data
   audioDestination.stream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
 
   recorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
-
-  recorder.ondataavailable = e => {
-    if (e.data.size > 0) {
-      chunks.push(e.data);
-    }
-  };
-
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
   recorder.onstop = () => {
     const blob = new Blob(chunks, { type: 'video/webm' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'recording.webm';
-    a.click();
+    a.href = url; a.download = 'recording.webm'; a.click();
     URL.revokeObjectURL(url);
   };
 
   recorder.start();
 }
 
-var is_recording = false;
-
 function toggle() {
   is_recording = !is_recording;
-
-  if (is_recording) {
-    recordingToggle.innerHTML = "Stop Recording";
-    startRecording();
-  } else {
-    recordingToggle.innerHTML = "Start Recording";
-    recorder.stop();
-  }
+  recordingToggle.innerHTML = is_recording ? "Stop Recording" : "Start Recording";
+  is_recording ? startRecording() : recorder.stop();
 }
 
-// Plays note at given pitch
+// ==== AUDIO PLAYBACK ====
+// Play note at given pitch with envelope
 function frequency(pitch) {
-  gainNode.gain.setValueAtTime(volumeSlider.value, audioCtx.currentTime);
-  setting = setInterval(() => { gainNode.gain.value = volumeSlider.value }, 1);
   oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
-  setTimeout(() => {
-    clearInterval(setting);
-    gainNode.gain.value = 0;
-  }, timePerNote * 0.9); // Stop sound after 90% of the note duration
+
+  const now = audioCtx.currentTime;
+  const fadeIn = timePerNote / 1000 * 0.05;
+  const fadeOut = timePerNote / 1000 * 0.95;
+
+  gainNode.gain.cancelScheduledValues(now);
+  gainNode.gain.setValueAtTime(0, now);
+  gainNode.gain.linearRampToValueAtTime(volumeSlider.value / 100, now + fadeIn);
+  gainNode.gain.linearRampToValueAtTime(0, now + fadeOut);
 
   freq = pitch;
 }
 
+// Validate input (only CDEFGAB)
 function validInput(input) {
-  // Check if input is valid (only contains C, D, E, F, G, A, B)
-  const validChars = /^[CDEFGAB]+$/;
-  return validChars.test(input);
+  return /^[CDEFGAB]+$/.test(input);
 }
 
-// Handles button press
+// ==== MAIN PLAYBACK HANDLER ====
+
+// Handles play button press
 function handle() {
   reset = true;
-
   audioCtx.resume();
   gainNode.gain.value = 0;
 
-  var userInput = String(input.value)
-  var notesList = [];
+  const userInput = String(input.value);
 
-  if (validInput(userInput)) {
-    document.getElementById('input-error').style.display = 'none';
-
-    timePerNote = parseFloat(lengthSlider.value) * 1000; // Convert seconds to milliseconds
-    length = userInput.length;
-    songLength = timePerNote * length;
-
-    colourGradient = ctx.createLinearGradient(0, height / 2, width, height / 2);
-    colourGradient.addColorStop(0, colour_1.value);
-    colourGradient.addColorStop(0.5, colour_2.value);
-    colourGradient.addColorStop(1, colour_3.value);
-
-    for (i = 0; i < userInput.length; i++) {
-      notesList.push(noteNames.get(userInput.charAt(i)));
-    }
-
-    let j = 0;
-
-    // Play first note immediately
-    frequency(parseInt(notesList[j]));
-    drawWave();
-    j++;
-
-    repeat = setInterval(() => {
-      if (j < notesList.length) {
-        frequency(parseInt(notesList[j]));
-        drawWave();
-        j++;
-      } else {
-        clearInterval(repeat);
-      }
-    }, timePerNote);
-
-  } else {
+  if (!validInput(userInput)) {
     document.getElementById('input-error').style.display = 'flex';
+    return;
   }
+  document.getElementById('input-error').style.display = 'none';
 
+  timePerNote = parseFloat(lengthSlider.value) * 1000;
+  length = userInput.length;
+  songLength = timePerNote * length;
+
+  // Set up color gradient for wave
+  colourGradient = ctx.createLinearGradient(0, height / 2, width, height / 2);
+  colourGradient.addColorStop(0, colour_1.value);
+  colourGradient.addColorStop(0.5, colour_2.value);
+  colourGradient.addColorStop(1, colour_3.value);
+
+  // Build note list
+  const notesList = Array.from(userInput).map(ch => noteNames.get(ch));
+  let j = 0;
+  // Play first note immediately
+  frequency(notesList[j]);
+  drawWave();
+  j++;
+
+  // Play remaining notes at intervals
+  const repeat = setInterval(() => {
+    if (j < notesList.length) {
+      frequency(notesList[j]);
+      drawWave();
+      j++;
+    } else {
+      clearInterval(repeat);
+    }
+  }, timePerNote);
+
+  // Stop sound and reset oscillator at end
+  setTimeout(() => {
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    resetOscillator();
+  }, songLength);
 }
 
+// ==== OSCILLATOR RESET ====
+// Stop and recreate oscillator for next playback
+function resetOscillator() {
+  try { oscillator.stop(); oscillator.disconnect(); } catch (e) { }
+  gainNode.gain.value = 0;
+
+  const newOsc = audioCtx.createOscillator();
+  newOsc.type = waveTypeSelect?.value || "sine";
+  newOsc.connect(gainNode);
+  newOsc.start();
+  window.oscillator = newOsc;
+}
+
+// ==== WAVEFORM DRAWING ====
+
+// Return waveform value for given type
 function waveType(x, period) {
   switch (waveTypeSelect.value) {
-    case 'sine':
-      return Math.sin(2 * Math.PI / period * x);
-    case 'square':
-      return Math.sign(Math.sin(2 * Math.PI / period * x));
-    case 'triangle':
-      return (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI / period * x));
-    case 'sawtooth':
-      return 2 * (x / period - Math.floor(0.5 + x / period));
-    default:
-      return Math.sin(2 * Math.PI / period * x);
+    case 'sine': return Math.sin(2 * Math.PI / period * x);
+    case 'square': return Math.sign(Math.sin(2 * Math.PI / period * x));
+    case 'triangle': return (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI / period * x));
+    case 'sawtooth': return 2 * (x / period - Math.floor(0.5 + x / period));
+    default: return Math.sin(2 * Math.PI / period * x);
   }
 }
 
-var waveUpdatePeriod;
-
-// Draws a sine wave with the current note frequency
+// Draws the wave for the current note
 function drawWave() {
   clearInterval(interval);
 
   if (reset) {
     ctx.clearRect(0, 0, width, height);
-
-    x = 0;
-    y = height / 2;
-
+    x = 0; y = height / 2;
     ctx.moveTo(x, y);
     ctx.beginPath();
   }
 
   waveUpdatePeriod = songLength / width;
-  console.log("Wave update period: " + waveUpdatePeriod);
-
-  let steps = width;
-  let counter = 0;
+  let steps = width, counter = 0;
 
   interval = setInterval(() => {
-    line(); // your function to draw the next point
-    x++;
-    counter++;
-    if (counter >= steps) {
-      clearInterval(interval);
-    }
+    line();
+    x++; counter++;
+    if (counter >= steps) clearInterval(interval);
   }, waveUpdatePeriod);
 
   reset = false;
 }
 
-// Draws single part of sine wave
+// Draw a single step of the wave
 function line() {
-  // Calculate where the cursor should be
   y = (height / 2) + (0.4 * volumeSlider.value) * waveType(x, 1 / ((freq / 10000) * (length / 2)));
 
-  // Draw line
   ctx.lineTo(x, y);
   ctx.strokeStyle = colourGradient;
   ctx.stroke();
-
-  // x++;
-  // counter++;
-
-  if (counter > (timePerNote / waveUpdatePeriod)) {
-    clearInterval(interval);
-  }
 }
 
+// ==== DARK MODE ====
+
+// Toggle dark mode and remember preference
 function toggleDarkMode() {
   let isDark = document.body.classList.toggle('dark-mode');
   localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
 }
 
-// On page load, remember if dark mode was enabled
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem('darkMode') === 'enabled') {
     document.body.classList.add('dark-mode');
     document.getElementById('toggle-dark-mode').checked = true;
