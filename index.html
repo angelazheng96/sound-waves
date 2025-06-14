@@ -9,8 +9,16 @@
 
 <body>
   <h1 class="animated-gradient-text">Oscillart</h1>
+
+  <div id="instructions-container">
+    <div class="instructions">Enter notes below (choose from CDEFGAB, with however many notes and whatever sequence you
+      want!) and watch them fill up the canvas!</div>
+    <div class="instructions">If you're more knowledgeable about music theory, unfortunately, you're confined to a C
+      major scale. Each note can only be one character, so accidentals are not possible. The note range is C4 to B4.
+    </div>
+  </div>
+
   <div>
-    <div id="instructions">Enter notes below and watch them fill up the canvas!</div>
     <input type="text" id="input">
     <button id="submit" onclick="handle()">Play music!</button>
   </div>
