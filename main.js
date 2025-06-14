@@ -140,7 +140,7 @@ function frequency(pitch) {
     gainNode.gain.value = 0;
   }, timePerNote - 100);
 
-  freq = pitch / 10000;
+  freq = pitch;
 }
 
 // Handles button press
@@ -165,8 +165,6 @@ function handle() {
   for (i = 0; i < userInput.length; i++) {
     notesList.push(noteNames.get(userInput.charAt(i)));
   }
-
-  console.log(notesList);
 
   let j = 0;
   repeat = setInterval(() => {
@@ -194,15 +192,18 @@ function drawWave() {
     ctx.beginPath();
   }
 
+  console.log(width);
+  console.log(songLength / width);
+
   counter = 0;
-  interval = setInterval(line, 20);
+  interval = setInterval(line, songLength / width);
   reset = false;
 }
 
 // Draws single part of sine wave
 function line() {
   // Calculate where the cursor should be
-  y = height / 2 + (volumeSlider.value * 40 / 100) * Math.sin(2 * Math.PI * freq * x * (0.5 * length));
+  y = (height / 2) + (0.4 * volumeSlider.value) * Math.sin((2 * Math.PI) * (freq / 10000) * (length / 2) * x);
 
   // Draw line
   ctx.lineTo(x, y);
