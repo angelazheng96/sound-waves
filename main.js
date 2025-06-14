@@ -49,6 +49,10 @@ let timePerNote = 0, songLength = 6000, length = 0;
 let repeat = null;      // For note playback interval
 let stopTimeout = null; // For the setTimeout that stops the song
 
+let manualVolumeActive = false;
+let manualVolumeTimeout = null;
+let fadeOutTimeout = null;
+
 // ==== RECORDING ====
 let blob, recorder = null, chunks = [], is_recording = false;
 
@@ -64,7 +68,13 @@ function updateColours() {
 updateColours();
 
 // Volume and length slider display
-volumeSlider.addEventListener('input', () => volumeSliderValue.textContent = volumeSlider.value);
+volumeSlider.addEventListener('input', () => {
+  volumeSliderValue.textContent = volumeSlider.value;
+  if (manualVolumeActive) {
+    gainNode.gain.setValueAtTime(volumeSlider.value / 100, audioCtx.currentTime);
+  }
+});
+
 lengthSlider.addEventListener('input', () => lengthSliderValue.textContent = lengthSlider.value + " seconds");
 
 // ==== RECORDING FUNCTIONS ====
@@ -110,10 +120,30 @@ function frequency(pitch) {
   const fadeIn = timePerNote / 1000 * 0.05;
   const fadeOut = timePerNote / 1000 * 0.95;
 
+  // Cancel any previous manual volume control
+  manualVolumeActive = false;
+  if (manualVolumeTimeout) clearTimeout(manualVolumeTimeout);
+  if (fadeOutTimeout) clearTimeout(fadeOutTimeout);
+
+  // Fade in
   gainNode.gain.cancelScheduledValues(now);
   gainNode.gain.setValueAtTime(0, now);
   gainNode.gain.linearRampToValueAtTime(volumeSlider.value / 100, now + fadeIn);
-  gainNode.gain.linearRampToValueAtTime(0, now + fadeOut);
+
+  // After fade-in, allow manual volume control
+  manualVolumeTimeout = setTimeout(() => {
+    manualVolumeActive = true;
+  }, fadeIn * 1000);
+
+  // Before fade-out, stop manual volume control and start fade-out
+  fadeOutTimeout = setTimeout(() => {
+    manualVolumeActive = false;
+    // Fade out
+    const fadeOutStart = audioCtx.currentTime;
+    gainNode.gain.cancelScheduledValues(fadeOutStart);
+    gainNode.gain.setValueAtTime(gainNode.gain.value, fadeOutStart);
+    gainNode.gain.linearRampToValueAtTime(0, fadeOutStart + (timePerNote / 1000 - fadeOut));
+  }, fadeOut * 1000);
 
   freq = pitch;
 }
