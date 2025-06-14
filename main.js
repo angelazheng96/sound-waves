@@ -71,7 +71,7 @@ const lengthSlider = document.getElementById('length-slider');
 const lengthSliderValue = document.getElementById('length-sliderValue');
 
 lengthSlider.addEventListener('input', function () {
-  lengthSliderValue.textContent = lengthSlider.value;
+  lengthSliderValue.textContent = lengthSlider.value + " seconds";
   songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
 });
 
