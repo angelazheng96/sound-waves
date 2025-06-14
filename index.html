@@ -8,38 +8,40 @@
 </head>
 
 <body>
-  <div id="container">
-    <h1 class="animated-gradient-text">Oscillart</h1>
-    <div>
-      <div id="instructions">Enter notes below and watch them fill up the canvas!</div>
-      <input type="text" id="input">
-      <button id="submit" onclick="handle()">Play music!</button>
-    </div>
-    <div id="colour">
-      <input type="color" id="colour-1" value="#7ac0cf">
-      <input type="color" id="colour-2" value="#ccb1e0">
-      <input type="color" id="colour-3" value="#e6bacb">
-    </div>
+  <h1 class="animated-gradient-text">Oscillart</h1>
+  <div>
+    <div id="instructions">Enter notes below and watch them fill up the canvas!</div>
+    <input type="text" id="input">
+    <button id="submit" onclick="handle()">Play music!</button>
+  </div>
+  <div id="colour">
+    <input type="color" id="colour-1" value="#7ac0cf">
+    <input type="color" id="colour-2" value="#ccb1e0">
+    <input type="color" id="colour-3" value="#e6bacb">
+  </div>
 
-    <div class="slider-group">
-      <label for="volume-slider">Volume</label>
-      <div class="slider-hover-group">
-        <input type="range" id="volume-slider" class="slider" min="0" max="100" value="100">
-        <span id="volume-sliderValue" class="slider-value">100</span>
-      </div>
+  <div class="slider-group">
+    <label for="volume-slider">Volume</label>
+    <div class="slider-hover-group">
+      <input type="range" id="volume-slider" class="slider" min="0" max="100" value="100">
+      <span id="volume-sliderValue" class="slider-value">100</span>
     </div>
-    <div class="slider-group">
-      <label for="length-slider">Song Length (seconds)</label>
-      <div class="slider-hover-group">
-        <input type="range" id="length-slider" class="slider" min="5" max="10" value="10">
-        <span id="length-sliderValue" class="slider-value">10</span>
-      </div>
+  </div>
+  <div class="slider-group">
+    <label for="length-slider">Song Length (seconds)</label>
+    <div class="slider-hover-group">
+      <input type="range" id="length-slider" class="slider" min="5" max="10" value="10">
+      <span id="length-sliderValue" class="slider-value">10</span>
     </div>
+  </div>
+  </div>
+
+  <div id="record-container">
+    <button id="record" onclick="toggle()">Start Recording</button>
   </div>
 
   <div id="canvas-container">
     <canvas id="canvas"></canvas>
-  </div>
   </div>
   <script src="main.js"></script>
 </body>

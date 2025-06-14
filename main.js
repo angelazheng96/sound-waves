@@ -75,6 +75,61 @@ lengthSlider.addEventListener('input', function () {
   songLength = parseInt(lengthSlider.value) * 1000; // Convert seconds to milliseconds
 });
 
+// Recording
+var blob, recorder = null;
+var chunks = [];
+
+const recordingToggle = document.getElementById('record');
+
+function startRecording() {
+  const canvasStream = canvas.captureStream(20); // Frame rate of canvas
+  const audioDestination = audioCtx.createMediaStreamDestination();
+  gainNode.connect(audioDestination);
+  const combinedStream = new MediaStream();
+
+  chunks = []; // Reset chunks for new recording
+
+  // Add in video data
+  canvasStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
+
+  // Add in audio data
+  audioDestination.stream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
+
+  recorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
+
+  recorder.ondataavailable = e => {
+    if (e.data.size > 0) {
+      chunks.push(e.data);
+    }
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'recording.webm';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  recorder.start();
+}
+
+var is_recording = false;
+
+function toggle() {
+  is_recording = !is_recording;
+
+  if (is_recording) {
+    recordingToggle.innerHTML = "Stop Recording";
+    startRecording();
+  } else {
+    recordingToggle.innerHTML = "Start Recording";
+    recorder.stop();
+  }
+}
+
 // Plays note at given pitch for 1 second
 function frequency(pitch) {
   gainNode.gain.setValueAtTime(volumeSlider.value, audioCtx.currentTime);
