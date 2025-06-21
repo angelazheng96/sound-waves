@@ -1,4 +1,4 @@
-# Oscillart
+# Sound Waves
 Create wavy, mathy, musical art on your very own canvas! 🧮〰️🎶  
 
 This project was made for Hack Club's [Oscillart YSWS](https://oscillart.athena.hackclub.com/), completed in ~10 hours.  
